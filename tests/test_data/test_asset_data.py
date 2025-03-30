@@ -35,6 +35,12 @@ class TestAssetData(unittest.TestCase):
         except ValueError as e:
             self.assertEqual(str(e), "Historic volatility must be a positive numeric type")
 
+    def test_his_vol_none_input(self):
+        try: 
+            self.test_asset_data.his_vol = None
+        except ValueError as e:
+            self.assertEqual(str(e), "Historic volatility must be a positive numeric type")
+
     # beta tests
     def test_beta_float_input(self):
         self.test_asset_data.beta = 0.15
@@ -59,6 +65,12 @@ class TestAssetData(unittest.TestCase):
     def test_beta_negative_input(self):
         try: 
             self.test_asset_data.beta = -1
+        except ValueError as e:
+            self.assertEqual(str(e), "Beta must be a positive numeric type")
+
+    def test_beta_none_input(self):
+        try: 
+            self.test_asset_data.beta = None
         except ValueError as e:
             self.assertEqual(str(e), "Beta must be a positive numeric type")
 
@@ -87,6 +99,11 @@ class TestAssetData(unittest.TestCase):
         self.test_asset_data.expected_returns = -50
         self.assertEqual(self.test_asset_data.expected_returns, -50)
 
+    def test_expected_returns_none_input(self):
+        try: 
+            self.test_asset_data.expected_returns = None
+        except ValueError as e:
+            self.assertEqual(str(e), "Expected returns must be a numeric type")
 
 if __name__ == "__main__":
     unittest.main()
