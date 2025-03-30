@@ -9,17 +9,17 @@ from monte_carlo_simulator.data.market_data import MarketData
 class TestMarketData(unittest.TestCase):
 
     test_market_data = MarketData()
-    test_dataframe1 = DataFrame(np.linspace(0.0, 3.0, num=5))
-    test_dataframe2 = DataFrame(np.zeros((4, 4)))
+    test_dataframe = DataFrame(np.linspace(0.0, 3.0, num=5))
+    test_zeros_dataframe = DataFrame(np.zeros((4, 4)))
 
     # test market_data attributes
     def test_market_data_dataframe_input(self):
-        self.test_market_data.market_data = self.test_dataframe1
-        assert_frame_equal(self.test_dataframe1, self.test_market_data.market_data)
+        self.test_market_data.market_data = self.test_dataframe
+        assert_frame_equal(self.test_dataframe, self.test_market_data.market_data)
 
-    def test_market_data_dataframe_input(self):
-        self.test_market_data.market_data = self.test_dataframe2
-        assert_frame_equal(self.test_dataframe2, self.test_market_data.market_data)
+    def test_market_data_zeros_dataframe_input(self):
+        self.test_market_data.market_data = self.test_zeros_dataframe
+        assert_frame_equal(self.test_zeros_dataframe, self.test_market_data.market_data)
 
     def test_market_data_list_input(self):
         try:

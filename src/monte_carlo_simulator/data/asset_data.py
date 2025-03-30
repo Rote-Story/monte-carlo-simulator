@@ -1,13 +1,18 @@
 
 from numbers import Number
-
+from yfinance import Ticker
 
 class AssetData:
 
     def __init__(self):
+        self._asset_info: Ticker = None
         self._his_vol: Number = None
         self._beta: Number = None
         self._expected_returns: Number = None
+        
+    @property
+    def asset_info(self):
+        return self._asset_info
 
     @property
     def his_vol(self):
@@ -20,6 +25,12 @@ class AssetData:
     @property
     def expected_returns(self):
         return self._expected_returns
+    
+    @asset_info.setter
+    def asset_info(self, asset_info: Ticker):
+        if not isinstance(asset_info, Ticker):
+            raise ValueError("Stock info must be a yfinance.Ticker object")
+        self._asset_info = asset_info
 
     @his_vol.setter    
     def his_vol(self, his_vol: Number):
