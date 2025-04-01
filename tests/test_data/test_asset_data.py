@@ -1,6 +1,6 @@
-import unittest.mock
-from yfinance import Ticker
+
 import unittest
+from yfinance import Ticker
 
 from monte_carlo_simulator.data.asset_data import AssetData
 

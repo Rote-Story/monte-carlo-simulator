@@ -48,3 +48,6 @@ class TestSimData(unittest.TestCase):
             self.test_sim_data.sim_data = None
         except ValueError as e:
             self.assertEqual(str(e), "Monte Carlo simulation data must be of type numpy.ndarray")
+
+if __name__ == "__main__":
+    unittest.main()

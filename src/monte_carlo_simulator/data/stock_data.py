@@ -2,7 +2,7 @@
 from pandas import DataFrame
 from numbers import Number
 
-from monte_carlo_simulator.data.asset_data import AssetData
+from .asset_data import AssetData
 
 class StockData(AssetData):
     """

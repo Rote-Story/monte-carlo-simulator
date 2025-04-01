@@ -156,4 +156,5 @@ class TestMarketData(unittest.TestCase):
         except ValueError as e:
             self.assertEqual(str(e), "Risk-free rate must be a numeric data type")
 
-
+if __name__ == "__main__":
+    unittest.main()

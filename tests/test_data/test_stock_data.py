@@ -96,3 +96,7 @@ class TestStockData(TestAssetData, unittest.TestCase):
             self.test_stock_data.div_growth_rate = None
         except ValueError as e:
             self.assertEqual(str(e), "Dividend growth rate must be a positive numeric type")
+
+
+if __name__ == "__main__":
+    unittest.main()
