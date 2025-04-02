@@ -2,7 +2,7 @@
 import yfinance as yf
 from requests.exceptions import RequestException, HTTPError
 from requests import Session
-from requests_cache import CacheMixin, SQLiteCache
+from requests_cache import CacheMixin, CachedSession, SQLiteCache
 from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
 from pyrate_limiter import Duration, RequestRate, Limiter
 
@@ -165,15 +165,67 @@ class MarketDataFetcher:
         else: # Invalid ticker symbol, error_message returned
             return result
 
+    def fetch_rfr_data(self, g_sec_symbol: str, period: str="max"):
+        """
+        Fetches the historical returns for the treasury securities as a
+        standin for the "risk-free rate."
+        Valid Treasury ticker symbols:
+            (^IRX: 13-week, ^FVX: 5-year, ^TNX: 10-year, ^TYX: 30-year)
+        """
+        result = self.validate_ticker(g_sec_symbol)
+
+        if result == True: # Valid ticker symbol
+            try:
+                # Getting rates for security standing in for "risk-free"
+                risk_free_rate = yf.download(
+                    g_sec_symbol,
+                    session=self.session,
+                    period=period
+                )
+                if risk_free_rate.empty:
+                    raise ValueError
+                
+                # Successful risk_free_rate fetch
+                return risk_free_rate
+
+            except ValueError:
+                error_message = f"No data found for this ticker: {g_sec_symbol}"
+                return error_message  
+
+            except RequestException as req_err:
+                error_message = f"A request ocurred: {req_err}"
+                return error_message
+
+        else: # Invalid ticker symbol, error_message returned
+            return result
+
+
+CachedSession
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     """
     Class combining functionality of CacheMixn, LimiterMixin, and 
-    Session, to reduce the burden on yahoo finance's servers 
-    and lower the chances of being IP blocked.
+    Session, to reduce the burden on yahoo finance's servers and 
+    lower the chances of being IP blocked.
+    Singleton session function: maintains only one session instance.
     """
+    
+    _session = None
 
-session = CachedLimiterSession(
-    limiter=Limiter(RequestRate(2, Duration.SECOND * 5)),  # max 2 requests per 5 seconds
-    bucket_class=MemoryQueueBucket,
-    backend=SQLiteCache("yfinance.cache"),
-    )
+    def __init__(self, limiter, bucket_class, backend):
+        if CachedLimiterSession._session is not None:
+            raise Exception("This is a Singleton class. Use get_session() instead.")
+        self._session = None 
+
+    @staticmethod
+    def get_session():
+        """
+        Instantiates a new session only if one does not already exist.
+        """
+        if CachedLimiterSession._session is None:
+            CachedLimiterSession._session = CachedLimiterSession(
+            limiter=Limiter(RequestRate(2, Duration.SECOND * 5)),  # max 2 requests per 5 seconds
+            bucket_class=MemoryQueueBucket,
+            backend=SQLiteCache("yfinance.cache"),
+            )
+        return CachedLimiterSession._session
+
