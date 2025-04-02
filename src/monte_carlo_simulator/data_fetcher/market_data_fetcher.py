@@ -7,7 +7,7 @@ from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
 from pyrate_limiter import Duration, RequestRate, Limiter
 
 
-class MarketDataFetcher():
+class MarketDataFetcher:
     """
     Fetches market data: stocks, bonds, indexes, etcetera.
     Uses CachedLimiterSession to reduce number of requests and
@@ -69,7 +69,35 @@ class MarketDataFetcher():
         else: # Ticker_symbol invalid, return error message
             return result
         
+    def fetch_dividends(self, ticker_object: yf.Ticker):
+        """
+        Retrieves historic dividend payments info.
+        Function assumes that yf.Ticker object has already been validated.
+        params: ticker_object a yf.Ticker object 
+        return: a pandas.Series containing historical dividend payments
+        """
+        try: # Check if this security has a dividend rate
+            ticker_object.get_info()["dividendRate"]
+            
+        except KeyError:
+            error_message = f"Ticker object missing key value: Dividend Rate"
+            return error_message
+        
+        try: # Retrieve dividends payment history if it exists
+            dividends = ticker_object.get_dividends()
+            if dividends.empty:
+                raise ValueError
 
+        except ValueError:
+            error_message = "No dividend payment history found for this ticker"
+            return error_message
+        
+        except RequestException as req_err:
+            error_message = f"A request ocurred: {req_err}"
+            return error_message
+
+        else: 
+            return dividends
 
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     """
