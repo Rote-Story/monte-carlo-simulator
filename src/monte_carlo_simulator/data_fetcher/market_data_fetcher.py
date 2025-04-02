@@ -131,6 +131,39 @@ class MarketDataFetcher:
         else: # Invalid ticker symbol, error_message returned
             return result
 
+    def fetch_market_data(self, market_symbol: str, period: str ="max"):
+        """
+        Fetches returns of the "broader market," typically approximated 
+        by market index securities like the S&P 500 (^GSPC).
+        params: market_symbol - a valid market index symbol string
+            period - a string representing the desired historical data period
+        """
+        result = self.validate_ticker(market_symbol)
+
+        if result == True: # Valid ticker symbol
+            try:
+                # Get historic market returns
+                market_data = yf.download(
+                    market_symbol,
+                    session=self.session,
+                    period=period
+                )
+                if market_data.empty:
+                    raise ValueError
+                
+                # Successful market_data fetch
+                return market_data
+                
+            except ValueError:
+                error_message = f"No data found for this ticker: {market_symbol}"
+                return error_message
+
+            except RequestException as req_err:
+                error_message = f"A request ocurred: {req_err}"
+                return error_message         
+            
+        else: # Invalid ticker symbol, error_message returned
+            return result
 
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     """
