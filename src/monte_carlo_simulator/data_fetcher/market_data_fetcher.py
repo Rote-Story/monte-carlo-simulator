@@ -99,6 +99,39 @@ class MarketDataFetcher:
         else: 
             return dividends
 
+    def fetch_asset_data(self, ticker_symbol: str, period: str ="5y"):
+        """
+        Fetches asset data corresponding to the ticker_symbol string.
+        params: ticker_symbol - a valid asset ticker symbol string
+            period - a string representing the desired historical data period
+        return: a pandas.DataFrame object containing historical asset data
+        """
+        result = self.validate_ticker(ticker_symbol)
+
+        if result == True: # Valid ticker symbol
+            try:
+                # Fetches historical data for the stock
+                asset_data = yf.download(
+                    ticker_symbol,
+                    session=self.session,
+                    period=period)
+                if asset_data.empty:
+                    raise ValueError
+                
+                return asset_data
+
+            except ValueError:
+                error_message = f"No data found for this ticker: {ticker_symbol}"
+                return error_message
+
+            except RequestException as req_err:
+                error_message = f"A request ocurred: {req_err}"
+                return error_message
+            
+        else: # Invalid ticker symbol, error_message returned
+            return result
+
+
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     """
     Class combining functionality of CacheMixn, LimiterMixin, and 
