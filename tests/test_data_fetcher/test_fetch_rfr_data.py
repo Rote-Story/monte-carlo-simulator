@@ -55,14 +55,16 @@ class TestFetchRFRData(unittest.TestCase):
         with patch("yfinance.download") as mock_download:
             mock_download.return_value = pd.DataFrame({})
         
-            result = self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+            self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, f"No data found for this ticker: {self.ticker_symbol}")
 
     def test_fetch_rfr_data_request_exception(self):
         with patch("yfinance.download") as mock_download:
             mock_download.side_effect = RequestException
     
-            result = self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+            self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertRegex(result, r"A request ocurred: \.*")
     
     @patch("yfinance.download")
@@ -74,21 +76,24 @@ class TestFetchRFRData(unittest.TestCase):
     def test_fetch_rfr_data_generic_http_error_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = HTTPError("HTTPError")
         
-        result = self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "An HTTP error occurred: HTTPError")
 
     @patch("yfinance.download")
     def test_fetch_rfr_data_request_exception_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = RequestException("RequestException")
         
-        result = self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "A request exception ocurred: RequestException")
 
     @patch("yfinance.download")
     def test_fetch_rfr_data_general_exception_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = Exception("Exception")
         
-        result = self.test_market_data_fetcher.fetch_stock_info(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_rfr_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result,  "An error occurred: Exception")
 
     def tearDown(self):

@@ -1,7 +1,7 @@
 
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, patch
 from requests.exceptions import RequestException, HTTPError
 import yfinance as yf
 import pandas as pd
@@ -13,11 +13,13 @@ from monte_carlo_simulator.data_fetcher.market_data_fetcher import MarketDataFet
 class TestFetchAssetData(unittest.TestCase):
 
     def setUp(self):
-        self.mock_ticker_instance = Mock(spec=yf.Ticker) # Mock ticker object
-        session = None # Session not needed for testing
-        self.test_market_data_fetcher = MarketDataFetcher(session)
         self.ticker_symbol = "IBM"
+        self.mock_ticker_instance = MagicMock(spec=yf.Ticker)
 
+        # CachedLimiterSession not needed for testing
+        self.test_market_data_fetcher = MarketDataFetcher(cached_limiter_session=None) 
+
+        # Setup patch for yfinance.Ticker requests
         ticker_patch = patch("yfinance.Ticker", return_value=self.mock_ticker_instance)
         ticker_patch.start()
     
@@ -55,14 +57,16 @@ class TestFetchAssetData(unittest.TestCase):
         with patch("yfinance.download") as mock_download:
             mock_download.return_value = pd.DataFrame({})
         
-            result = self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+            self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, f"No data found for this ticker: {self.ticker_symbol}")
 
     def test_fetch_asset_data_request_exception(self):
         with patch("yfinance.download") as mock_download:
             mock_download.side_effect = RequestException
     
-            result = self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+            self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertRegex(result, r"A request ocurred: \.*")
     
     @patch("yfinance.download")
@@ -74,21 +78,24 @@ class TestFetchAssetData(unittest.TestCase):
     def test_fetch_asset_data_generic_http_error_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = HTTPError("HTTPError")
         
-        result = self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "An HTTP error occurred: HTTPError")
 
     @patch("yfinance.download")
     def test_fetch_asset_data_request_exception_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = RequestException("RequestException")
         
-        result = self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_asset_data(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "A request exception ocurred: RequestException")
 
     @patch("yfinance.download")
     def test_fetch_asset_data_general_exception_message(self, _):
         self.mock_ticker_instance.get_info.side_effect = Exception("Exception")
         
-        result = self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result,  "An error occurred: Exception")
 
     def tearDown(self):

@@ -54,25 +54,41 @@ class TestFetchAssetInfo(unittest.TestCase):
     def test_fetch_asset_info_missing_ticker_error_message(self):
         self.mock_ticker_instance.get_info.side_effect = yf.exceptions.YFTickerMissingError
         
-        result = self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        # Call fetch_asset_info to test error handling
+        self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+
+        # Check MarketDataFetcher error message
+        result = self.test_market_data_fetcher._error_message
         self.assertRegex(result, r"An error occurred: .*")
 
     def test_fetch_asset_info_generic_http_error_message(self):
         self.mock_ticker_instance.get_info.side_effect = requests.exceptions.HTTPError("HTTPError")
         
-        result = self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        # Call fetch_asset_info to test error handling        
+        self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        
+        # Check MarketDataFetcher error message        
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "An HTTP error occurred: HTTPError")
 
     def test_fetch_asset_info_request_exception_message(self):
         self.mock_ticker_instance.get_info.side_effect = requests.exceptions.RequestException("RequestException")
-        
-        result = self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+
+        # Call fetch_asset_info to test error handling  
+        self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+
+        # Check MarketDataFetcher error message  
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result, "A request exception ocurred: RequestException")
 
     def test_fetch_asset_info_general_exception_message(self):
         self.mock_ticker_instance.get_info.side_effect = Exception("Exception")
         
-        result = self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        # Call fetch_asset_info to test error handling
+        self.test_market_data_fetcher.fetch_asset_info(self.ticker_symbol)
+        
+        # Check MarketDataFetcher error message  
+        result = self.test_market_data_fetcher._error_message
         self.assertEqual(result,  "An error occurred: Exception")
 
     def tearDown(self):
