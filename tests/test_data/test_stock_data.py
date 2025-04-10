@@ -4,7 +4,7 @@ import numpy as np
 from pandas.testing import assert_frame_equal
 import unittest
 
-from monte_carlo_simulator.data.stock_data import StockData
+from monte_carlo_simulator.data_classes.stock_data import StockData
 from tests.test_data.test_asset_data import TestAssetData
 
 class TestStockData(TestAssetData, unittest.TestCase):

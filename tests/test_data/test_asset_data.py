@@ -2,7 +2,7 @@
 import unittest
 from yfinance import Ticker
 
-from monte_carlo_simulator.data.asset_data import AssetData
+from monte_carlo_simulator.data_classes.asset_data import AssetData
 
 class TestAssetData(unittest.TestCase):
     
