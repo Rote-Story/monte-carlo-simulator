@@ -15,7 +15,7 @@ class TestCachedLimiterSession(unittest.TestCase):
         try: 
             CachedLimiterSession(limiter=None, bucket_class=None, backend=None)
         except Exception as e:
-            self.assertEqual(str(e), "This is a Singleton class. Use get_session() instead.")
+            self.assertEqual(str(e), 'This is a Singleton class. Use get_session() to retrieve an instance instead.')
                                
     def test_cached_limiter_session_singleton(self):
         session_two = CachedLimiterSession.get_session()
@@ -25,5 +25,5 @@ class TestCachedLimiterSession(unittest.TestCase):
         self.assertIsInstance(self.session, CachedLimiterSession)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
