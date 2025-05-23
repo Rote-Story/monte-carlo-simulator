@@ -99,7 +99,8 @@ class MarketDataFetcher:
             asset_data = yf.download(
                 ticker_symbol,
                 session=self._session,
-                period=period)
+                period=period
+                )
 
             if asset_data.empty:
                 raise ValueError
