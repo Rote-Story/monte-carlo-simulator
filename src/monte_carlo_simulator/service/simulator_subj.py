@@ -8,6 +8,9 @@ from monte_carlo_simulator.model import *
 from monte_carlo_simulator.data_fetcher import MarketDataFetcher
 from monte_carlo_simulator.service.interface.subject_inter import Subject
 from monte_carlo_simulator.const import ANNUAL_TRADING_DAYS, MONTHS_PER_YEAR
+from monte_carlo_simulator.service.util.price_col_checker import price_col_checker
+from monte_carlo_simulator.service.calculator import *
+from monte_carlo_simulator.service.util.data_visualizer import monte_carlo_sim_vis, train_test_vis
 
 class Simulator(Subject):
     """
@@ -196,6 +199,100 @@ class Simulator(Subject):
 
             self.notify()  # Notify observers of updated data
         
+        # Notify observers if an exception occurred
+        except Exception as e: 
+            # If no exception message has been set, use generalized message
+            if self.error_message == None:
+                self.error_message = f'An exception occurred: {e}'
+
+            self.notify()
+
+    def run_train_test_split(
+            self, 
+            asset_symbol: str, 
+            period: str,
+            exp_ret_flag: str,
+            time_horizon: int = 12,
+            n_simulations: int = 1000,
+            standev_window: int = 30,
+            market_symbol: str = None, 
+            rfr_symbol: str = None
+            ) -> None:
+        """
+        Splits data into training and testing data, with testing data length equal to
+        the number of data points in the selected time horizon and training data equal
+        to the number of data points in the selected time period minus the time horizon.
+        
+        Uses the training data to calculate volatility and expected returns and then
+        uses those inputs to run a simulation with the first value in the testing 
+        data period.
+
+        Uses the testing data to chart price paths predicted by the Monte Carlo 
+        simulator using the training inputs against the actual prices observed over 
+        the testing period.
+
+        Parameters:
+            asset_symbol - a ticker symbol for a financial asset (e.g., 'AAPL')
+            period - the period of historical asset, market, and risk-free rate, data
+                that the user would like to use in the calculations and simulation
+            exp_ret_flag - a string holding the returns calculation method used to
+                predict future asset returns (e.g., 'Dividend Discount Model')
+            time_horizon - the future period to be forecasted by the Monte Carlo 
+                simulation (in months)
+            n_simulations - the number of simulations the user would like to run
+            standev_window - the number of days used to calculate the rolling standard 
+                deviation of asset prices 
+            market_symbol - a ticker symbol for a market index (e.g., '^GSPC')
+            rfr_symbol - a ticker symbol for a 'risk-free' asset (e.g, '^IRX')
+
+        Returns: None; this method calls self.notify() to notify observers
+            of simulation results. Observers then display results or any error 
+            messages encountered by this function 
+        """
+        # Run as protected code to handle exceptions
+        try: 
+            # Populating primary data fields for future calculations and simulation
+            self.populate_data(asset_symbol, market_symbol, rfr_symbol, period, exp_ret_flag)
+
+            # Get correct clost column label
+            close_col = price_col_checker(self.financial_asset.asset_data)
+
+            # Set the starting index for the testing data equal to the investment horizon 
+            # The investment time horizon is divided by the time measure 
+            # (months, days, years) divided by the number of trading days in a year
+            test_start_index = round(time_horizon / (MONTHS_PER_YEAR/ANNUAL_TRADING_DAYS)) 
+
+            # If chosen period is shorter than time horizon, abort function, output error message
+            if test_start_index > self.financial_asset.asset_data.index.size:
+                raise Exception('Chosen time period must be greater than investment horizon for training data comparison.')
+
+            # Split the asset data into training data and testing data
+            asset_train = self.financial_asset.asset_data[close_col].iloc[:-test_start_index]
+            asset_test = self.financial_asset.asset_data[close_col].iloc[-test_start_index:]
+
+            # Use the training data to calculate simulation inputs for the model
+            self.financial_asset.his_vol= calc_volatility(asset_train, standev_window)
+            self.financial_asset.expected_returns = calc_exp_returns(
+                financial_asset=self.financial_asset,
+                market_index=self.market_index,
+                risk_free_sec=self.risk_free_sec,
+                end_index= -test_start_index # The ending index of the training data
+                )
+            
+            # Run the simulation using the training calculation outputs
+            train_sim = self.monte_carlo_sim(
+                initial_price=asset_test.iloc[0, 0],
+                expected_returns=self.financial_asset.expected_returns,
+                his_vol=self.financial_asset.his_vol,
+                time_horizon=time_horizon,
+                n_simulations=n_simulations
+            )
+
+            # Visualize training data against testing data
+            self._train_test_figure = train_test_vis(train_sim, asset_test)
+            
+            self.notify()
+
         # Notify observers if an exception occurred
         except Exception as e: 
             # If no exception message has been set, use generalized message
