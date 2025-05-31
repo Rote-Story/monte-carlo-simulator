@@ -1,6 +1,7 @@
 
 from matplotlib.figure import Figure
 import numpy as np
+import pandas as pd
 
 from monte_carlo_simulator.const import ANNUAL_TRADING_DAYS, MONTHS_PER_YEAR
 
@@ -89,4 +90,64 @@ def monte_carlo_sim_vis(sim_data: np.ndarray, time_horizon: int = 12) -> Figure:
         text.set_color('white')
     legend.get_frame().set_facecolor('#3E3E3E')
 
+    return fig
+
+def train_test_vis(train_sim: np.ndarray, test_data: pd.DataFrame) -> Figure:
+    """
+    Charts prior asset price data on a lineplot.
+
+    Parameters: 
+        train_sim - a numpy.ndarray of simulated price paths based on 
+            training data.
+        test_data - a pandas.DataFrame of actual prices to compare against
+            the predicted prices produced by the training data.
+    
+    Returns: a Figure object displaying the test vs. predicted prices.
+    """
+    # Verify asset_data is a DataFrame
+    if not isinstance(test_data, pd.DataFrame):
+        raise TypeError(f'"test_data" parameter must be a DataFrame, not {type(test_data)}')
+    # Verify train_sim is a numpy array
+    if not isinstance(train_sim, np.ndarray):
+        raise TypeError(f'"train_sim" parameter must be an numpy.ndarray, not {type(train_sim)}')
+
+    # Create a Matplotlib Figure and add a subplot
+    fig = Figure(figsize=(7, 4), facecolor='#1E1E1E')
+    axs1 = fig.add_subplot(111)
+
+    # Using a 'darkmode' style for the plot
+    # Set color, grid color and style for the plot
+    axs1.set_facecolor('#2E2E2E')
+    axs1.grid(color='#3E3E3E', linestyle='--')
+
+    # Use the testing data index for the y-axis values
+    plot_index = test_data.index
+    
+    # Chart price path lines on the figure object
+    axs1.plot(plot_index, train_sim, alpha=0.2)
+
+    # Create double-line for actual prices with contrasting colors to stand out 
+    # against the multi-colored price paths
+    axs1.plot(plot_index, test_data, color='#000000', linewidth=3)
+    axs1.plot(plot_index, test_data, color='#F3F3F3', label='Actual Prices', linewidth=2)
+    axs1.set_title('Simulated Price Paths vs. Actual Price', color='white')
+
+    # Setup legend, adjust colors and size for graph for the plot
+    legend = axs1.legend(loc='upper left')
+    for text in legend.get_texts():
+        text.set_color('white')
+
+    legend.get_frame().set_facecolor('#3E3E3E')
+
+    # Set axis tick spacing, color, and labels for the plot
+    axs1.set_xlabel('Trading Days', color='white')
+    axs1.set_ylabel('Price in USD', color='white')
+    axs1.set_xlim(plot_index[0] - pd.DateOffset(days=7), plot_index[-1])
+    axs1.tick_params(axis='x', colors='white')
+    axs1.tick_params(axis='y', colors='white')
+
+    # Set color, grid color and style for the plot
+    axs1.set_facecolor('#2E2E2E')
+    axs1.grid(color='#3E3E3E', linestyle='--')
+        
     return fig
