@@ -10,7 +10,7 @@ from monte_carlo_simulator.service.interface.subject_inter import Subject
 from monte_carlo_simulator.const import ANNUAL_TRADING_DAYS, MONTHS_PER_YEAR
 from monte_carlo_simulator.service.util.price_col_checker import price_col_checker
 from monte_carlo_simulator.service.calculator import *
-from monte_carlo_simulator.service.util.data_visualizer import monte_carlo_sim_vis, train_test_vis
+from monte_carlo_simulator.service.util.data_visualizer import monte_carlo_sim_vis, backtest_vis
 
 class Simulator(Subject):
     """
@@ -36,7 +36,7 @@ class Simulator(Subject):
         self._financial_asset: FinancialAsset = financial_asset
         self._market_index: MarketIndex = market_index
         self._risk_free_sec: RiskFreeSecurity = risk_free_sec
-        self._train_test_figure: Figure = None
+        self._backtest_figure: Figure = None
         self._sim_figure: Figure = None
         self._error_message: str = None
 
@@ -207,7 +207,7 @@ class Simulator(Subject):
 
             self.notify()
 
-    def run_train_test_split(
+    def run_backtest(
             self, 
             asset_symbol: str, 
             period: str,
@@ -219,7 +219,7 @@ class Simulator(Subject):
             rfr_symbol: str = None
             ) -> None:
         """
-        Splits data into training and testing data, with testing data length equal to
+        Splits data into "training" and testing data, with testing data length equal to
         the number of data points in the selected time horizon and training data equal
         to the number of data points in the selected time period minus the time horizon.
         
@@ -289,7 +289,7 @@ class Simulator(Subject):
             )
 
             # Visualize training data against testing data
-            self._train_test_figure = train_test_vis(train_sim, asset_test)
+            self._backtest_figure = backtest_vis(train_sim, asset_test)
             
             self.notify()
 
@@ -412,8 +412,8 @@ class Simulator(Subject):
         return self._market_index
     
     @property
-    def train_test_figure(self) -> Figure:
-        return self._train_test_figure
+    def backtest_figure(self) -> Figure:
+        return self._backtest_figure
 
     @property
     def sim_figure(self) -> Figure:

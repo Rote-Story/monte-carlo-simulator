@@ -92,7 +92,7 @@ def monte_carlo_sim_vis(sim_data: np.ndarray, time_horizon: int = 12) -> Figure:
 
     return fig
 
-def train_test_vis(train_sim: np.ndarray, test_data: pd.DataFrame) -> Figure:
+def backtest_vis(train_sim: np.ndarray, test_data: pd.DataFrame) -> Figure:
     """
     Charts prior asset price data on a lineplot.
 

@@ -9,7 +9,7 @@ from pandas.testing import assert_frame_equal
 from monte_carlo_simulator.model import MarketIndex, Stock, RiskFreeSecurity
 from monte_carlo_simulator.data_fetcher import MarketDataFetcher
 from monte_carlo_simulator.gui.frames.error_frame_obs import ErrorFrame
-from monte_carlo_simulator.gui.frames.vis_frames_obs import SimVisFrame, TrainTestVisFrame
+from monte_carlo_simulator.gui.frames.vis_frames_obs import SimVisFrame, BacktestVisFrame
 from monte_carlo_simulator.gui.inter.observer_inter import Observer
 from monte_carlo_simulator.service.simulator_subj import Simulator
 

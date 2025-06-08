@@ -22,7 +22,7 @@ class SimVisFrame(ttk.Frame, Observer):
             sim_canvas.get_tk_widget().grid(row=0, column=0)
 
 
-class TrainTestVisFrame(ttk.Frame, Observer):
+class BacktestVisFrame(ttk.Frame, Observer):
     """
     Data visualization frame. Displays output from Monte
     Carlo simulations for training and testing data.
@@ -34,9 +34,9 @@ class TrainTestVisFrame(ttk.Frame, Observer):
     def update(self, subject):
         # Check if historical asset price data matches most recent visualization
         # and that no errors occurred 
-        if isinstance(subject.train_test_figure, Figure):
+        if isinstance(subject.backtest_figure, Figure):
 
             # Embed the plot in the tkinter window
-            train_test_canvas = FigureCanvasTkAgg(subject.train_test_figure, master=self)
-            train_test_canvas.draw()
-            train_test_canvas.get_tk_widget().grid(row=0, column=0)
+            backtest_canvas = FigureCanvasTkAgg(subject.backtest_figure, master=self)
+            backtest_canvas.draw()
+            backtest_canvas.get_tk_widget().grid(row=0, column=0)

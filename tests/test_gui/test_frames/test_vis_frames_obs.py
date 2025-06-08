@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import MagicMock, PropertyMock, patch
 import tkinter as tk
 
-from monte_carlo_simulator.gui.frames.vis_frames_obs import TrainTestVisFrame, SimVisFrame
+from monte_carlo_simulator.gui.frames.vis_frames_obs import BacktestVisFrame, SimVisFrame
 from monte_carlo_simulator.gui.frames.sim_frame import SimFrame
 from monte_carlo_simulator.model.financial_asset import FinancialAsset
 from monte_carlo_simulator.service.simulator_subj import Simulator
@@ -129,7 +129,7 @@ class TestAssetVisFrame(unittest.TestCase):
         self.root.withdraw() # Prevent window from being shown
 
         # Initialize radio button frame
-        self.train_test_vis_frame = TrainTestVisFrame(self.app)
+        self.backtest_vis_frame = BacktestVisFrame(self.app)
 
          # Create figure, and figure canvas objects with mock methods
         self.figure = plt.Figure()
@@ -142,24 +142,24 @@ class TestAssetVisFrame(unittest.TestCase):
             )
 
     def tearDown(self):
-        self.train_test_vis_frame.destroy()
+        self.backtest_vis_frame.destroy()
         self.app.destroy()
         self.root.destroy()
         patch.stopall()
 
-    def test_update_train_test_figure_canvas_draw_called_once(self):
-        self.mock_simulator.configure_mock(train_test_figure=self.figure)
-        self.train_test_vis_frame.update(self.mock_simulator)
+    def test_update_backtest_figure_canvas_draw_called_once(self):
+        self.mock_simulator.configure_mock(backtest_figure=self.figure)
+        self.backtest_vis_frame.update(self.mock_simulator)
         self.fig_canvas.draw.assert_called_once()
 
-    def test_update_train_test_figure_canvas_get_tk_widget_called_once(self):
-        self.mock_simulator.configure_mock(train_test_figure=self.figure)
-        self.train_test_vis_frame.update(self.mock_simulator)
+    def test_update_backtest_figure_canvas_get_tk_widget_called_once(self):
+        self.mock_simulator.configure_mock(backtest_figure=self.figure)
+        self.backtest_vis_frame.update(self.mock_simulator)
         self.fig_canvas.get_tk_widget.assert_called_once()
 
     def test_update_subject_asset_data_int(self):
-        self.mock_simulator.configure_mock(train_test_figure=10)
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure=10)
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
            
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -167,8 +167,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()            
 
     def test_update_subject_asset_data_none(self):
-        self.mock_simulator.configure_mock(train_test_figure=None)
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure=None)
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -176,8 +176,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()
 
     def test_update_subject_asset_data_bool(self):
-        self.mock_simulator.configure_mock(train_test_figure=True)
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure=True)
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -185,8 +185,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()
 
     def test_update_subject_asset_data_float(self):
-        self.mock_simulator.configure_mock(train_test_figure=0.03)
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure=0.03)
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -194,8 +194,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()
 
     def test_update_subject_asset_data_str(self):
-        self.mock_simulator.configure_mock(train_test_figure='string')
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure='string')
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -203,8 +203,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()
 
     def test_update_subject_asset_data_list(self):
-        self.mock_simulator.configure_mock(train_test_figure=[10, 12])
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure=[10, 12])
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
@@ -212,8 +212,8 @@ class TestAssetVisFrame(unittest.TestCase):
         self.fig_canvas.get_tk_widget.assert_not_called()
 
     def test_update_subject_asset_data_dict(self):
-        self.mock_simulator.configure_mock(train_test_figure={'Array': np.linspace(0, 10, 10)})
-        self.train_test_vis_frame.update(self.mock_simulator) # Call method to test behavior
+        self.mock_simulator.configure_mock(backtest_figure={'Array': np.linspace(0, 10, 10)})
+        self.backtest_vis_frame.update(self.mock_simulator) # Call method to test behavior
         
         # FigureCanvasTkAgg object methods should only be called if update is called
         # with a Figure object
