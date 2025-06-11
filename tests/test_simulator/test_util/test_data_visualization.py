@@ -126,7 +126,7 @@ class TestTrainTestVisualization(unittest.TestCase):
     train_sim = train_sim[-252:]
 
     # Run the asset data plot creation (run outside of a setup method for testing speed)
-    fig = vis.train_test_vis(train_sim, test_data)
+    fig = vis.backtest_vis(train_sim, test_data)
     y_ticks = fig.axes[0].get_yticks()
     y_lim = fig.axes[0].get_ylim()
     x_lim = fig.axes[0].get_xlim()
@@ -150,62 +150,62 @@ class TestTrainTestVisualization(unittest.TestCase):
 
     def test_train_sim_vis_invalid_data_dict(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(self.train_sim, {'1':1, 'two':2})
+            vis.backtest_vis(self.train_sim, {'1':1, 'two':2})
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
 
     def test_train_sim_vis_invalid_data_negative_int(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(self.train_sim, -1)
+            vis.backtest_vis(self.train_sim, -1)
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
 
     def test_train_sim_vis_invalid_data_int(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(0)
+            vis.backtest_vis(0)
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
 
     def test_train_sim_vis_invalid_data_tuple(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(self.train_sim, ([1],0))
+            vis.backtest_vis(self.train_sim, ([1],0))
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
 
     def test_train_sim_vis_invalid_data_boolean(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(self.train_sim, False)
+            vis.backtest_vis(self.train_sim, False)
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
 
     def test_train_sim_vis_invalid_data_None(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(self.train_sim, None)
+            vis.backtest_vis(self.train_sim, None)
             self.assertRegex(str(e), r'"train_sim" parameter must be a DataFrame, not \.*')
     
     def test_test_data_vis_invalid_data_dict(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis({'1':1, 'two':2}, self.test_data)
+            vis.backtest_vis({'1':1, 'two':2}, self.test_data)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_test_data_vis_invalid_data_negative_int(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(-1, self.test_data)
+            vis.backtest_vis(-1, self.test_data)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_test_data_vis_invalid_data_int(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(0)
+            vis.backtest_vis(0)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_test_data_vis_invalid_data_tuple(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(([1],0), self.test_data)
+            vis.backtest_vis(([1],0), self.test_data)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_test_data_vis_invalid_data_boolean(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(False, self.test_data)
+            vis.backtest_vis(False, self.test_data)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_test_data_vis_invalid_data_None(self):
         with self.assertRaises(TypeError) as e:
-            vis.train_test_vis(None, self.test_data)
+            vis.backtest_vis(None, self.test_data)
             self.assertRegex(str(e), r'"test_data" parameter must be a DataFrame, not \.*')
 
     def test_legend_is_not_none(self):
