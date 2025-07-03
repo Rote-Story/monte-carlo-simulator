@@ -10,7 +10,7 @@ class SimVisFrame(ttk.Frame, Observer):
     """Frame for monte carlo visualization outputs of future performance"""
 
     def __init__(self, master):
-        super().__init__(master, width=800, height=600)
+        super().__init__(master, width=700, height=400)
 
     def update(self, subject) -> None:
         # Check if sim_data has been changed since last visualization run

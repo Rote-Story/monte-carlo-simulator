@@ -238,9 +238,9 @@ def calc_beta(asset_data: DataFrame, market_data: DataFrame) -> float:
     """
     # Verify both arguments are DataFrame objects
     if not isinstance(asset_data, DataFrame):
-        raise TypeError(f'"asset_data" must be of type pandas.DataFrame, not {type(asset_data)}')
+        raise TypeError(f'Beta calculation error: "asset_data" must be of type pandas.DataFrame, not {type(asset_data)}')
     elif not isinstance(market_data, DataFrame):
-        raise TypeError(f'"market_data" must be of type pandas.DataFrame, not {type(market_data)}')
+        raise TypeError(f'Beta calculation error: "market_data" must be of type pandas.DataFrame, not {type(market_data)}')
 
     # Get start of date of asset data to ensure periods match
     start_date = asset_data.index[0]

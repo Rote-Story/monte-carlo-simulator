@@ -81,7 +81,7 @@ class Simulator(Subject):
         """
         # Check that asset symbol is correct type 
         if type(asset_symbol) != str:
-            raise TypeError(f'"asset_symbol" must be of type str, not {type(asset_symbol)}')
+            raise TypeError(f'Error encountered when retrieving data: "asset_symbol" must be of type str, not {type(asset_symbol)}')
 
         # Check if time period and asset symbol match existing data
         elif self.financial_asset.period != period or self.financial_asset.asset_symbol != asset_symbol:
@@ -99,10 +99,10 @@ class Simulator(Subject):
             case 'Capital Asset Pricing Model':
                 # Make sure that risk-free and market index symbols are included
                 if type(market_symbol) != str:
-                    raise TypeError(f'"market_symbol" must be of type str, not {type(market_symbol)}')
+                    raise TypeError(f'Error encountered when retrieving data:"market_symbol" must be of type str, not {type(market_symbol)}')
 
                 elif type(rfr_symbol) != str:
-                    raise TypeError(f'"rfr_symbol" must be of type str, not {type(rfr_symbol)}')
+                    raise TypeError(f'Error encountered when retrieving data:"rfr_symbol" must be of type str, not {type(rfr_symbol)}')
 
                 # Gather preliminary market data if existing data does not match user request
                 if self.market_index.market_symbol != market_symbol:
@@ -255,7 +255,7 @@ class Simulator(Subject):
             self.populate_data(asset_symbol, market_symbol, rfr_symbol, period, exp_ret_flag)
 
             # Get correct clost column label
-            close_col = price_col_checker(self.financial_asset.asset_data)
+            close_column = price_col_checker(self.financial_asset.asset_data)
 
             # Set the starting index for the testing data equal to the investment horizon 
             # The investment time horizon is divided by the time measure 
@@ -264,11 +264,11 @@ class Simulator(Subject):
 
             # If chosen period is shorter than time horizon, abort function, output error message
             if test_start_index > self.financial_asset.asset_data.index.size:
-                raise Exception('Chosen time period must be greater than investment horizon for training data comparison.')
+                raise Exception('Error encountered during backtest: Chosen time period must be greater than investment horizon for training data comparison.')
 
             # Split the asset data into training data and testing data
-            asset_train = self.financial_asset.asset_data[close_col].iloc[:-test_start_index]
-            asset_test = self.financial_asset.asset_data[close_col].iloc[-test_start_index:]
+            asset_train = self.financial_asset.asset_data.iloc[:-test_start_index]
+            asset_test = self.financial_asset.asset_data.iloc[-test_start_index:]
 
             # Use the training data to calculate simulation inputs for the model
             self.financial_asset.his_vol= calc_volatility(asset_train, standev_window)
@@ -278,10 +278,10 @@ class Simulator(Subject):
                 risk_free_sec=self.risk_free_sec,
                 end_index= -test_start_index # The ending index of the training data
                 )
-            
+
             # Run the simulation using the training calculation outputs
             train_sim = self.monte_carlo_sim(
-                initial_price=asset_test.iloc[0, 0],
+                initial_price=asset_test[close_column].iloc[0, 0],
                 expected_returns=self.financial_asset.expected_returns,
                 his_vol=self.financial_asset.his_vol,
                 time_horizon=time_horizon,
@@ -289,7 +289,7 @@ class Simulator(Subject):
             )
 
             # Visualize training data against testing data
-            self._backtest_figure = backtest_vis(train_sim, asset_test)
+            self._backtest_figure = backtest_vis(train_sim, asset_test[close_column])
             
             self.notify()
 
@@ -336,33 +336,33 @@ class Simulator(Subject):
 
         # Verify arguments are of the correct type
         if not isinstance(initial_price, Number):
-            self.error_message = f'"initial_price" must be a number, not {type(initial_price)}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "initial_price" must be a number, not {type(initial_price)}'
             raise TypeError
         elif not isinstance(expected_returns, Number):
-            self.error_message = f'"expected_returns" must be a number, not {type(expected_returns)}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "expected_returns" must be a number, not {type(expected_returns)}'
             raise TypeError
         elif not isinstance(his_vol, Number):
-            self.error_message = f'"his_vol" must be a number, not {type(his_vol)}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "his_vol" must be a number, not {type(his_vol)}'
             raise TypeError
         elif not isinstance(time_horizon, Number):
-            self.error_message = f'"time_horizon" must be a number, not {type(time_horizon)}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "time_horizon" must be a number, not {type(time_horizon)}'
             raise TypeError
         elif not isinstance(n_simulations, Number):
-            self.error_message = f'"n_simulations" must be a number, not {type(n_simulations)}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "n_simulations" must be a number, not {type(n_simulations)}'
             raise TypeError
 
         # Verify that arguments are within the expected range
         if initial_price < 0:
-            self.error_message = f'"initial_price" must be positive, not {initial_price}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "initial_price" must be positive, not {initial_price}'
             raise ValueError
         if his_vol < 0:
-            self.error_message = f'"his_vol" must be positive, not {his_vol}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "his_vol" must be positive, not {his_vol}'
             raise ValueError
         if time_horizon <= 0:
-            self.error_message = f'"time_horizon" must be greater than zero, not {time_horizon}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "time_horizon" must be greater than zero, not {time_horizon}'
             raise ValueError
         if n_simulations <= 0:
-            self.error_message = f'"n_simulations" must be greater than zero, not {n_simulations}'
+            self.error_message = f'Error encountered in Monte Carlo simulation: "n_simulations" must be greater than zero, not {n_simulations}'
             raise ValueError
 
         # Set the number of trading days to match the time_horizon

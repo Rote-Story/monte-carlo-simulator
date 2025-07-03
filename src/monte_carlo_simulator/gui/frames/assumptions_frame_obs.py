@@ -89,7 +89,7 @@ class AssumptionsFrame(ttk.Labelframe, Observer):
 
             # Set expected_returns_label output to show expected returns; converting to annual returns
             self.expected_returns_label.config(
-                text=f'{subject.financial_asset.asset_symbol}\'s expected returns: {subject.financial_asset.expected_returns * 100: .4f}%')
+                text=f'{subject.financial_asset.asset_symbol}\'s expected returns: {subject.financial_asset.expected_returns: .4f}%')
         
             # Check which model was chosen to provide model-specific assumptions
             match subject.financial_asset.exp_ret_flag:
@@ -110,7 +110,7 @@ class AssumptionsFrame(ttk.Labelframe, Observer):
                     
                     # Set risk free rate label to show 'risk free rate'
                     self.rfr_label.config(
-                        text=f'{subject.risk_free_sec.rfr_symbol} historic returns: {subject.risk_free_sec.risk_free_rate * 100: .4f}%')
+                        text=f'{subject.risk_free_sec.rfr_symbol} historic returns: {subject.risk_free_sec.risk_free_rate: .4f}%')
 
                     # Clearing any old output text not relevant to this model
                     self.div_growth_label.config(text=f'')

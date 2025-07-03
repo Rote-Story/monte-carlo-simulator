@@ -21,7 +21,7 @@ class SimFrame(ttk.Frame):
 
     def __init__(self, master: tk.Tk, simulator: Subject):
 
-        super().__init__(master=master, height=1000, width=1525)
+        super().__init__(master=master, height=762, width=1525)
         self.simulator = simulator
 
         self._button_frame: ButtonFrame = None 
@@ -130,7 +130,7 @@ class SimFrame(ttk.Frame):
             exp_ret_flag = self.radio_button_frame.calc_var.get(),
             time_horizon = int(self.input_frame.horizon_spinbox.get()), # Cast str to int
             n_simulations = int(self.input_frame.n_sim_spinbox.get()), # Cast str to int
-            standev_window = self._input_frame.standev_spinbox.get(),
+            standev_window = int(self._input_frame.standev_spinbox.get()), # Cast str to int
             market_symbol = market_symbol,
             rfr_symbol = rfr_symbol
         )
@@ -151,7 +151,7 @@ class SimFrame(ttk.Frame):
             exp_ret_flag = self.radio_button_frame.calc_var.get(),
             time_horizon = int(self.input_frame.horizon_spinbox.get()), # Cast str to int
             n_simulations = int(self.input_frame.n_sim_spinbox.get()), # Cast str to int
-            standev_window = self._input_frame.standev_spinbox.get(),
+            standev_window = int(self._input_frame.standev_spinbox.get()), # Cast str to int
             market_symbol = market_symbol,
             rfr_symbol = rfr_symbol
         )

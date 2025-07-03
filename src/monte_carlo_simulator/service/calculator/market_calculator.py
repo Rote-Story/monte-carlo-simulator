@@ -17,7 +17,7 @@ def calc_market_returns(market_data: pd.DataFrame) -> float:
     """
     # Verify market_data is a DataFrame 
     if (not isinstance(market_data, pd.DataFrame)):
-        raise TypeError(f'"market_data" parameter must be a DataFrame, not {type()}')
+        raise TypeError(f'Market returns calculation error: "market_data" parameter must be a DataFrame, not {type()}')
 
     # Identify if 'Adj Close' is an available column or just 'Close'
     close_column = price_col_checker(market_data)
@@ -43,7 +43,8 @@ def calc_daily_market_returns(market_data: pd.DataFrame) -> float:
     """
     # Verify market_data is a DataFrame 
     if (not isinstance(market_data, pd.DataFrame)):
-        raise TypeError(f'"market_data" parameter must be a DataFrame, not {type(market_data)}')
+        raise TypeError(
+            f'Daily market returns calculation error:"market_data" parameter must be a DataFrame, not {type(market_data)}')
 
     # Identify if 'Adj Close' is an available column or just 'Close'
     close_column = price_col_checker(market_data)
@@ -65,7 +66,7 @@ def calc_rfr(rfr_data: pd.DataFrame) -> float:
     """
     # Verify rfr_data is a DataFrame 
     if (not isinstance(rfr_data, pd.DataFrame)):
-        raise TypeError(f'"rfr_data" parameter must be a DataFrame, not {type(rfr_data)}')
+        raise TypeError(f'Risk-free rate calculation error: "rfr_data" parameter must be a DataFrame, not {type(rfr_data)}')
 
     # Identify if 'Adj Close' is an available column or just 'Close'
     close_column = price_col_checker(rfr_data)
@@ -84,7 +85,7 @@ def calc_daily_rfr(rfr_data: pd.DataFrame) -> float:
     """
     # Verify rfr_data is a DataFrame 
     if (not isinstance(rfr_data, pd.DataFrame)):
-        raise TypeError(f'"rfr_data" parameter must be a DataFrame, not {type(rfr_data)}')
+        raise TypeError(f'Daily risk-free rate calculation error: "rfr_data" parameter must be a DataFrame, not {type(rfr_data)}')
 
     # Identify if 'Adj Close' is an available column or just 'Close'
     close_column = price_col_checker(rfr_data)
@@ -110,7 +111,7 @@ def calc_volatility(asset_data: pd.DataFrame, standev_window: int = 30) -> np.fl
     """
     # Verify asset_data is a DataFrame
     if not isinstance(asset_data, pd.DataFrame):
-        raise TypeError(f'"asset_data" parameter must be a DataFrame, not {type(asset_data)}')
+        raise TypeError(f'Volatility calculation error: "asset_data" parameter must be a DataFrame, not {type(asset_data)}')
     
     # Verify that window is an integer
     if not isinstance(standev_window, int):
@@ -119,7 +120,7 @@ def calc_volatility(asset_data: pd.DataFrame, standev_window: int = 30) -> np.fl
                 raise ValueError(f'"standev_window" parameter must be a positive integer, not {standev_window}') 
             standev_window = int(standev_window)
         else:
-            raise TypeError(f'"standev_window" parameter must be a positive integer, not {type(standev_window)}')
+            raise TypeError(f'Volatility calculation error: "standev_window" parameter must be a positive integer, not {type(standev_window)}')
 
     # Identify if 'Adj Close' is an available column or just 'Close'
     close_column = price_col_checker(asset_data)
