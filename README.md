@@ -1,3 +1,5 @@
+> ⚠️ **Note:** This is a work in progress. I'm using this project to explore Monte Carlo methods and practice writing cleaner Python code. Feedback is welcome, but this is primarily a learning exercise.
+
 # Project Title
 
 Monte Carlo Simulator Desktop Application
