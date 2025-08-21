@@ -1,66 +1,93 @@
-> ⚠️ **Note:** This is a work in progress. I'm using this project to explore Monte Carlo methods and practice writing cleaner Python code. Feedback is welcome, but this is primarily a learning exercise.
+# 🎲 Monte Carlo Simulator Desktop Application
 
-# Project Title
+> ⚠️ **Work in Progress**  
+> This is an ongoing learning project exploring Monte Carlo simulations using Python. While the core features are functional, development is still in progress. Feedback is welcome!
 
-Monte Carlo Simulator Desktop Application
+---
 
-## Description
+## 📊 Description
 
-This app is designed to run Monte Carlo simulations for securities like stocks using data from yahoo finance. Financial asset information is downloaded using the yfinance module and displayed using tkinter gui as well as matplotlib and seaborn charts. Monte Carlo simulations aim to capture the range of likely future possibilities by using the standard deviation, current value, and expected future returns to simulate different price movements from today until the end of the investment horizon. This model is meant to give a sense of future asset price movements, but like all models, its forecasting ability is limited by the information underpinning its assumptions. For example, it assumes that historical volatility will be a good predictor of future volatility, and that expected future returns can be accurately estimated. Estimators of future returns, like the Capital Asset Pricing Model, have their own limitations which impact the accuracy of the final result. Many of the assumptions made by the model are displayed upon running the simulation so that the user can take these into account when assessing the accuracy and usefulness of the model's output.
+This desktop application runs Monte Carlo simulations for financial assets (e.g., stocks) using historical data from Yahoo Finance. It provides a GUI interface built with `tkinter`, along with data visualization using `matplotlib` and `seaborn`.
 
-## Installation
+Monte Carlo simulations aim to estimate a range of possible future asset prices by using current price, historical volatility, and expected return to simulate thousands of random price paths.
 
-### Prerequisites:
+### 🧠 Important Notes & Assumptions:
+- Historical volatility is assumed to be predictive of future volatility.
+- Expected returns are assumed to be known or estimable (e.g., via CAPM).
+- Forecasts are only as good as the data and assumptions behind them.
+- Model assumptions (beta, volatility, risk-free rate, etc.) are shown in-app for transparency.
 
-- Python 3.10 or higher
-  - Python can be downloaded from the [Python Download Page](https://www.python.org/downloads/) (external link)
-- Python Modules:
-  - yfinance (>=0.2.55,<0.3.0)
-  - seaborn (>=0.13.2,<0.14.0)
-  - pandas (>=2.2.3,<3.0.0)
-  - scipy (>=1.15.2,<2.0.0)
-  - numpy (>=2.2.4,<3.0.0)
-  - matplotlib (>=3.10.1,<4.0.0)
-  - requests-cache (>=1.2.1,<2.0.0)
-  - pyrate-limiter (<3.0)
-  - requests-ratelimiter (>=0.7.0,<0.8.0)
-  - sv-ttk (>=2.6.0,<3.0.0)
-  - mplfinance (>=0.12.10b0,<0.13.0)
+> 🧪 This model is **not intended for financial decision-making**. It's a tool for exploration and learning.
 
-### Requirements Installation
+---
 
-Specfic versions of the prerequesite packages can be found in the `requirements.txt` file. These can be installed using the following steps:
+## 🧰 Installation
 
-1. **Ensure you have the `requirements.txt` file** in your project directory.
+### Prerequisites
 
-2. **Install dependencies**
+- Python 3.10 or higher: [Download Python](https://www.python.org/downloads/)
+- Poetry package manager: [Install Poetry](https://python-poetry.org/docs/)
+- See dependencies listed in `pyproject.toml`
 
-- **For Windows or macOS/Linux**: `bash pip install -r requirements.txt`
+### Install Steps
 
-## Usage
+1. Clone the repository and navigate to the project directory.
+2. Ensure `pyproject.toml` and `poetry.lock` are present.
+3. Install dependencies:
 
-The GUI has four primary widgets:
+   ```bash
+   poetry install
+   ```
+--- 
 
-1. The first widget is an input window for the ticker symbol (string), investment time horizon in years (int), historical timeframe to use in calculations, and the desired timeframe in days used calculate the standard deviation (int).
-2. The second widget displays actual historical asset performance matching the investment time horizon - the testing period - charted against predicted price paths based on training data which predates the testing period.
-3. The third widget is the future simulation output, which uses the full range of available data to forecast future performance and display the range of predicted price paths falling within two standard deviations of the mean.
-4. The fourth widget displays the assumptions used to generate the simulation, things like beta, historic volatility, the "risk-free rate," and the expected returns on the security.
+## 🖥️ Usage Overview
 
-The simulator uses a normal distribution to simulate Brownian Motion, meaning that it is unsuitable for asset classes that have a tendency to revert to the mean, like bonds, whose valuation trends closer to the par value as the bond approaches its maturity date. It is assumed that the chosen security has the "Close" and "Adj Close" listed on Yahoo Finance as daily security prices, securities like U.S. treasuries are unsuitable due to their "Close" being listed as the annual interest rate rather than the price of the security. Additionally,
+The app GUI includes four main widgets:
 
-## Issue Submissions
+#### **1. Input Panel**
 
-To submit any suggestions for improvement, questions, reports of bugs or other issues, please email me or send me a message on github (contact information below). I believe that programming and software development are a lifelong learning process, and there is always room to grow and improve.
+   Enter:
+   - Ticker symbol (e.g., AAPL)
+   - Investment time horizon (years)
+   - Historical timeframe for training data
+   - Standard deviation period (days)
 
-## Contact Information
+#### **3. Backtest Panel**
+Shows predicted vs. actual historical performance (for a held-out test set).
 
-Email: [triberry@yahoo.com](triberry@yahoo.com)
-GitHub: [Rote-Story](https://github.com/Rote-Story)
+#### **4. Forecast Panel**
+Displays future price simulations based on the full dataset, showing price paths within ±2 standard deviations.
 
-## License
+#### **5. Assumptions Panel**
 
-Distributed under an MIT license.
+Lists key model assumptions such as:
+- Beta
+- Historic volatility
+- Risk-free rate
+- Expected returns
 
-## Acknowledgments
+> ⚠️ The simulation assumes log-normal price behavior and Brownian Motion. It is not suitable for mean-reverting assets like bonds or any asset without meaningful daily closing prices on Yahoo Finance.
 
-This project relied heavily on the yfinance, matplotlib, seaborn, tkinter, numpy, and of course python libraries. Additionally, the styling relied on the sv-tkk module, These resources were invaluable for the creation of this application.
+---
+
+## 🐛 Issue Submissions
+
+If you encounter bugs, have questions, or want to suggest improvements, feel free to reach out via:
+- 📧 Email: triberry@yahoo.com
+- 💬 GitHub: @Rote-Story
+I believe programming is a continuous learning process—your insights are welcome!
+
+
+
+## 📄 License
+This project is licensed under the MIT License.
+
+
+
+## 🙏 Acknowledgments
+Special thanks to the developers behind:
+- yfinance
+- matplotlib, seaborn, numpy, tkinter, pandas, scipy
+- UI styled using sv-ttk
+
+These tools made this project possible.
